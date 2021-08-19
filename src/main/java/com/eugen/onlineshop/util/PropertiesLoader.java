@@ -1,4 +1,4 @@
-package com.eugen.onlineshop;
+package com.eugen.onlineshop.util;
 
 import java.io.IOException;
 import java.io.InputStream;

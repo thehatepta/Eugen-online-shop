@@ -9,19 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-public class DaoProduct implements DaoInterface{
-    private final String getAllQuery = "SELECT ID, NAME, PRICE  FROM PRODUCTS";
-    private final String getProductQuery = "SELECT id, name, price FROM PRODUCTS WHERE ID = ?";
-    private final String deleteQuery = "DELETE FROM PRODUCTS WHERE ID = ?";
-    private final String updateQuery = "UPDATE PRODUCTS SET NAME = ?, PRICE = ? WHERE ID = ?";
-    private final String addQuery = "insert into products(id, name, price) values (?, ?, ?)";
-
-
-
-
+public class DaoProduct implements DaoProductInterface {
 
     private final JdbcConnector jdbcConnector;
 
@@ -34,7 +24,7 @@ public class DaoProduct implements DaoInterface{
         ArrayList<Product> products = new ArrayList<>();
 
         try (Connection connection = jdbcConnector.getConnection();
-             PreparedStatement getAllStatement = connection.prepareStatement(getAllQuery)) {
+             PreparedStatement getAllStatement = connection.prepareStatement("SELECT ID, NAME, PRICE  FROM PRODUCTS")) {
             getAllStatement.execute();
             try (ResultSet resultSet = getAllStatement.getResultSet()) {
                 while (resultSet.next()) {
@@ -50,7 +40,7 @@ public class DaoProduct implements DaoInterface{
 
     public Product get(int id){
         try (Connection connection = jdbcConnector.getConnection();
-             PreparedStatement getStatement = connection.prepareStatement(getProductQuery)) {
+             PreparedStatement getStatement = connection.prepareStatement("SELECT id, name, price FROM PRODUCTS WHERE ID = ?")) {
             getStatement.setInt(1, id);
             getStatement.execute();
             try (ResultSet resultSet = getStatement.getResultSet()) {
@@ -64,9 +54,21 @@ public class DaoProduct implements DaoInterface{
         }
     }
 
+    public void add(Product product){
+        try (Connection connection = jdbcConnector.getConnection();
+             PreparedStatement addStatement = connection.prepareStatement("insert into products(id, name, price) values (?, ?, ?)")) {
+            addStatement.setString(1, String.valueOf(getNewProductId() +1));
+            addStatement.setString(2, product.getName());
+            addStatement.setDouble(3, product.getPrice());
+            addStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new JdbcDataException("Unable to generate new product", e);
+        }
+    }
+
     public void delete(int id){
         try (Connection connection = jdbcConnector.getConnection();
-             PreparedStatement getStatement = connection.prepareStatement(deleteQuery)) {
+             PreparedStatement getStatement = connection.prepareStatement("DELETE FROM PRODUCTS WHERE ID = ?")) {
             getStatement.setInt(1, id);
             getStatement.execute();
         }catch (SQLException e) {
@@ -76,11 +78,11 @@ public class DaoProduct implements DaoInterface{
 
     public void update(Product product){
         try (Connection connection = jdbcConnector.getConnection();
-             PreparedStatement getStatement = connection.prepareStatement(updateQuery)) {
-            getStatement.setString(1, product.getName());
-            getStatement.setDouble(2, product.getPrice());
-            getStatement.setInt(3, product.getId());
-            getStatement.execute();
+             PreparedStatement updateStatement = connection.prepareStatement("UPDATE PRODUCTS SET NAME = ?, PRICE = ? WHERE ID = ?")) {
+            updateStatement.setString(1, product.getName());
+            updateStatement.setDouble(2, product.getPrice());
+            updateStatement.setInt(3, product.getId());
+            updateStatement.executeUpdate();
         }catch (SQLException e) {
             throw new JdbcDataException("Unable to delete update product with id {" + product.getId() + "}", e);
         }
@@ -91,5 +93,24 @@ public class DaoProduct implements DaoInterface{
         return new Product(resultSet.getInt("ID"),
                 resultSet.getString("NAME"),
                 resultSet.getDouble("PRICE"));
+    }
+
+    private int getNewProductId() {
+        int newId;
+        try (Connection connection = jdbcConnector.getConnection();
+             PreparedStatement newIdStatement = connection.prepareStatement("select max(id) from PRODUCTS")) {
+            newIdStatement.execute();
+            try (ResultSet resultSet = newIdStatement.getResultSet()) {
+                if (resultSet.next()) {
+                    newId = resultSet.getInt(1);
+                } else {
+                    newId = 1;
+                }
+                return newId;
+            }
+        }catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return -1;
     }
 }

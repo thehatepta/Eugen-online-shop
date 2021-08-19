@@ -1,25 +1,28 @@
 package com.eugen.onlineshop.service;
 
+import com.eugen.onlineshop.dao.DaoProductInterface;
 import com.eugen.onlineshop.dao.DaoProduct;
 import com.eugen.onlineshop.entity.Product;
 
-import javax.servlet.http.HttpServlet;
-import java.sql.SQLException;
 import java.util.List;
 
-public class ProductService extends HttpServlet {
-    private final DaoProduct daoProduct;
+public class ProductService {
+    private final DaoProductInterface daoProduct;
 
     public ProductService(DaoProduct daoProduct) {
         this.daoProduct = daoProduct;
     }
 
-    public List<Product> findAll() throws SQLException {
+    public List<Product> findAll() {
         return daoProduct.findAllProducts();
     }
 
     public Product getById(int id){
         return daoProduct.get(id);
+    }
+
+    public void add(Product product){
+        daoProduct.add(product);
     }
 
     public void deleteById(int id){

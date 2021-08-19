@@ -1,22 +1,18 @@
 package com.eugen.onlineshop.entity;
 
-import lombok.Generated;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Objects;
 
+
+@Getter
+@Setter
 public class Product  {
 
-    @Getter
-    @Setter
-    @Generated
     int id;
-    @Getter
-    @Setter
     String name;
-    @Getter
-    @Setter
     double price;
 
 
@@ -34,11 +30,17 @@ public class Product  {
     }
 
 
-    public Product(int id, String name, double price) {
+    public Product( String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public Product( int id, String name, double price) {
         this.id = id;
         this.name = name;
         this.price = price;
     }
+
 
     @Override
     public String toString() {

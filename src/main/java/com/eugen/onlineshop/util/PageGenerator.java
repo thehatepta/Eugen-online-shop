@@ -1,5 +1,6 @@
-package com.eugen.onlineshop.web;
+package com.eugen.onlineshop.util;
 
+import com.eugen.onlineshop.entity.Product;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -16,8 +17,9 @@ public class PageGenerator {
     private final Configuration configuration = new Configuration();
 
     public static PageGenerator instance() {
-        if (pageGenerator == null)
+        if (pageGenerator == null) {
             pageGenerator = new PageGenerator();
+        }
         return pageGenerator;
     }
 
@@ -38,11 +40,30 @@ public class PageGenerator {
 
     }
 
-    public static void addProduct(Writer writer) throws IOException, TemplateException {
+    public static void addProductPageGeneration(Writer writer) throws IOException, TemplateException {
         Configuration configuration = new Configuration();
         configuration.setClassForTemplateLoading(PageGenerator.class, "/templates");
         configuration.clearTemplateCache();
-        Template template = configuration.getTemplate("/new_product.html");
+        Template template = configuration.getTemplate("/NewProduct.html");
+        Map<String, Object> pageData = new HashMap<>();
+        template.process(pageData, writer);
+    }
+
+    public static void generateProductEditPage(Product product, Writer writer) throws IOException, TemplateException {
+        Configuration configuration = new Configuration();
+        configuration.setClassForTemplateLoading(PageGenerator.class, "/templates");
+        configuration.clearTemplateCache();
+        Template template = configuration.getTemplate("/EditProduct.html");
+        Map<String, Object> pageData = new HashMap<>();
+        pageData.put("product", product);
+        template.process(pageData, writer);
+    }
+
+    public static void loginProductEditPage(Writer writer) throws IOException, TemplateException {
+        Configuration configuration = new Configuration();
+        configuration.setClassForTemplateLoading(PageGenerator.class, "/templates");
+        configuration.clearTemplateCache();
+        Template template = configuration.getTemplate("/LoginPage.html");
         Map<String, Object> pageData = new HashMap<>();
         template.process(pageData, writer);
     }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+
+    <servlet>
+        <servlet-name>loginServlet</servlet-name>
+        <servlet-class>com.eugen.onlineshop.web.validationServlets.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>loginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>allProductsServlet</servlet-name>
+        <servlet-class>com.eugen.onlineshop.web.productServlets.AllProductServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>allProductsServlet</servlet-name>
+        <url-pattern>/products</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>productAdditionServlet</servlet-name>
+        <servlet-class>com.eugen.onlineshop.web.productServlets.ProductAdditionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>productAdditionServlet</servlet-name>
+        <url-pattern>/product/manage</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>securityFilter</filter-name>
+        <filter-class>com.eugen.onlineshop.web.filter.SecurityFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>securityFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
+
+    <servlet>
+        <servlet-name>productDeleteServlet</servlet-name>
+        <servlet-class>com.eugen.onlineshop.web.productServlets.ProductDeleteServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>productDeleteServlet</servlet-name>
+        <url-pattern>/product/delete</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>productEditServlet</servlet-name>
+        <servlet-class>com.eugen.onlineshop.web.productServlets.ProductEditServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>productEditServlet</servlet-name>
+        <url-pattern>/product/edit</url-pattern>
+    </servlet-mapping>
+
+</web-app>
